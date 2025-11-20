@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_11_20_115327) do
+ActiveRecord::Schema[7.1].define(version: 2025_11_20_120200) do
   create_table "action_mailbox_inbound_emails", force: :cascade do |t|
     t.integer "status", default: 0, null: false
     t.string "message_id", null: false
@@ -69,6 +69,14 @@ ActiveRecord::Schema[7.1].define(version: 2025_11_20_115327) do
     t.index ["slug", "sluggable_type"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type"
     t.index ["sluggable_id"], name: "index_friendly_id_slugs_on_sluggable_id"
     t.index ["sluggable_type"], name: "index_friendly_id_slugs_on_sluggable_type"
+  end
+
+  create_table "shops", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "subdomain", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["subdomain"], name: "index_shops_on_subdomain", unique: true
   end
 
   create_table "solidus_stripe_customers", force: :cascade do |t|
@@ -530,10 +538,12 @@ ActiveRecord::Schema[7.1].define(version: 2025_11_20_115327) do
     t.string "meta_title"
     t.datetime "discontinue_on", precision: nil
     t.integer "primary_taxon_id"
+    t.integer "shop_id"
     t.index ["available_on"], name: "index_spree_products_on_available_on"
     t.index ["deleted_at"], name: "index_spree_products_on_deleted_at"
     t.index ["name"], name: "index_spree_products_on_name"
     t.index ["primary_taxon_id"], name: "index_spree_products_on_primary_taxon_id"
+    t.index ["shop_id"], name: "index_spree_products_on_shop_id"
     t.index ["slug"], name: "index_spree_products_on_slug", unique: true
   end
 
@@ -1194,8 +1204,10 @@ ActiveRecord::Schema[7.1].define(version: 2025_11_20_115327) do
     t.datetime "confirmed_at", precision: nil
     t.datetime "confirmation_sent_at", precision: nil
     t.string "unconfirmed_email"
+    t.boolean "is_super_admin", default: false, null: false
     t.index ["deleted_at"], name: "index_spree_users_on_deleted_at"
     t.index ["email"], name: "email_idx_unique", unique: true
+    t.index ["is_super_admin"], name: "index_spree_users_on_is_super_admin"
     t.index ["reset_password_token"], name: "index_spree_users_on_reset_password_token_solidus_auth_devise", unique: true
     t.index ["spree_api_key"], name: "index_spree_users_on_spree_api_key"
   end
@@ -1299,6 +1311,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_11_20_115327) do
   add_foreign_key "spree_product_option_types", "spree_products", column: "product_id"
   add_foreign_key "spree_product_properties", "spree_products", column: "product_id"
   add_foreign_key "spree_product_properties", "spree_properties", column: "property_id"
+  add_foreign_key "spree_products", "shops"
   add_foreign_key "spree_products", "spree_shipping_categories", column: "shipping_category_id"
   add_foreign_key "spree_products", "spree_taxons", column: "primary_taxon_id"
   add_foreign_key "spree_products_taxons", "spree_products", column: "product_id"
