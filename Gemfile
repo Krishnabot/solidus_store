@@ -95,3 +95,6 @@ end
 gem "solidus_stripe", "~> 5.a"
 
 gem "solidus_admin", ">= 0.2"
+
+# Multi-tenancy
+gem "acts_as_tenant"
