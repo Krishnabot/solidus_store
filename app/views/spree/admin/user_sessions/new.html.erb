@@ -3,6 +3,9 @@
 <% end %>
 
 <% @body_id = 'login' %>
+<% content_for :head do %>
+  <%= stylesheet_link_tag "solidus_admin/tailwind", media: "all", "data-turbo-track": "reload" %>
+<% end %>
 <div id="existing-customer">
   <h6><%= t('spree.admin_login') %></h6>
   <div data-hook="login">
@@ -27,5 +30,65 @@
     <%= t('spree.or') %>
     <%= link_to t('spree.forgot_password'), spree.admin_recover_password_path %>
   </div>
+  <% if Rails.env.development? && (dev_panel = Rails.application.config.x.dev_login_panel).present? %>
+    <style>
+      .dev-login-panel {
+        margin-top: 1rem;
+        padding: 0.75rem;
+        background: #f5f7fb;
+        border: 1px dashed #9ca3af;
+        border-radius: 6px;
+        font-size: 13px;
+      }
+
+      .dev-login-panel__title {
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+      }
+
+      .dev-login-panel__section + .dev-login-panel__section {
+        margin-top: 0.5rem;
+        padding-top: 0.5rem;
+        border-top: 1px solid #e5e7eb;
+      }
+
+      .dev-login-panel__list {
+        margin: 0.25rem 0 0;
+        padding: 0 0 0 0.75rem;
+      }
+
+      .dev-login-panel code {
+        background: #fff;
+        padding: 0 4px;
+        border-radius: 3px;
+      }
+
+      .dev-login-panel__note {
+        margin: 0.35rem 0 0;
+        color: #6b7280;
+      }
+    </style>
+    <div class="dev-login-panel">
+      <div class="dev-login-panel__title">Dev login panel</div>
+      <div class="dev-login-panel__section">
+        <strong>Superadmin</strong>
+        <div>Email: <code><%= dev_panel.dig(:super_admin, :email) %></code></div>
+        <div>Password: <code><%= dev_panel.dig(:super_admin, :password) %></code></div>
+      </div>
+      <div class="dev-login-panel__section">
+        <strong>Tenant shops</strong>
+        <ul class="dev-login-panel__list">
+          <% Array(dev_panel[:tenant_shops]).each do |shop_creds| %>
+            <li>
+              <span><%= shop_creds[:label] %></span>
+              <div>Email: <code><%= shop_creds[:email] %></code></div>
+              <div>Password: <code><%= shop_creds[:password] %></code></div>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+      <p class="dev-login-panel__note">Shown in development only.</p>
+    </div>
+  <% end %>
 </div>
 <div data-hook="login_extras"></div>
