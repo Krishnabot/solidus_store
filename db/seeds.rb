@@ -10,3 +10,6 @@
 Spree::Core::Engine.load_seed
 Spree::Auth::Engine.load_seed
 SolidusStripe::Engine.load_seed
+
+# Local seed data
+require_relative "seeds/users"
