@@ -12,5 +12,6 @@ module.exports = {
 
     // Include paths to your own components.
     `${__dirname}/../../app/components/admin/**/*`,
+    `${__dirname}/../../app/views/spree/admin/**/*.{html,html.erb,erb}`,
   ],
 }
